@@ -27,21 +27,19 @@ module Cevennes
             else
               [ '!', *v, *v1 ]
             end }
-          .compact
 
-      d +=
-        (h1.keys - h0.keys)
-          .collect { |k|
-            v = h1[k]
-            [ '+', -1, nil, *h1[k] ] }
+      (h1.keys - h0.keys)
+        .collect { |k| h1[k] }
+        .reverse
+        .each { |lnum, line|
+          i = d.index { |a, _, _, l1, _| l1 > lnum } || d.length
+          d.insert(i, [ '+', -1, nil, lnum, line ]) }
 
       s = d.inject({}) { |h, (a, _, _)| h[a] = (h[a] || 0) + 1; h }
       s['l0'] = h0.length - 1
       s['l1'] = h1.length - 1
 
-#(
       [ [ 'keys', ks0, ks1 ], [ 'stats', s ] ] + d
-#).tap { |x| pp x[0, 4] }
     end
 
     protected
