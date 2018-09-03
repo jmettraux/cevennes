@@ -9,6 +9,13 @@ Diffs CSVs by lines, focusing on a single ID
 ## usage
 
 TODO
+```
+csv0 = %{
+  }
+csv1 = %{
+  }
+pp Cevennes.diff('ISIN', csv0, csv1)
+```
 
 ## LICENSE
 
