@@ -12,7 +12,15 @@ describe Cevennes do
 
   describe '.diff' do
 
-    it 'works'
+    it 'works' do
+
+      cvs0 = File.read('spec/list0.csv')
+      cvs1 = File.read('spec/list1.csv')
+
+      d = Cevennes.diff('ISIN / Cusip', cvs0, cvs1)
+
+pp d
+    end
   end
 end
 
