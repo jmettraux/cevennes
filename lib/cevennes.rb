@@ -20,22 +20,28 @@ module Cevennes
         h0
           .collect { |k, v|
             v1 = h1[k]
-            if v1 == v
-              [ '=', v, nil ]
+            if v1 == nil
+              [ '-', *v, -1, nil ]
+            elsif v1[1] == v[1]
+              [ '=', *v, v[0], nil ]
             else
-              [ v1 == nil ? '-' : '!', v, v1 ]
+              [ '!', *v, *v1 ]
             end }
-          .compact +
+          .compact
+
+      d +=
         (h1.keys - h0.keys)
           .collect { |k|
             v = h1[k]
-            [ '+', nil, h1[k] ] }
+            [ '+', -1, nil, *h1[k] ] }
 
       s = d.inject({}) { |h, (a, _, _)| h[a] = (h[a] || 0) + 1; h }
       s['l0'] = h0.length - 1
       s['l1'] = h1.length - 1
 
+#(
       [ [ 'keys', ks0, ks1 ], [ 'stats', s ] ] + d
+#).tap { |x| pp x[0, 4] }
     end
 
     protected
@@ -43,16 +49,17 @@ module Cevennes
     def hash(id, csv)
 
       csva = ::CSV.parse(reencode(csv))
-        .reject { |row| row.compact.empty? }
-        .drop_while { |row| ! row.include?(id) }
+        .each_with_index.collect { |row, i| [ 1 + i, row ] }
+        .reject { |i, row| row.compact.empty? }
+        .drop_while { |i, row| ! row.include?(id) }
 
-      i = csva[0].index(id)
+      idi = csva[0][1].index(id)
 
       csva[1..-1]
-        .inject({ keys: csva[0] }) { |h, row|
+        .inject({ keys: csva[0] }) { |h, (i, row)|
           if row.compact.length > 1
-            k = row[i]
-            h[k] = row if k
+            k = row[idi]
+            h[k] = [ i, row ] if k
           end
           h }
     end

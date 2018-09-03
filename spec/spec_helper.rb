@@ -6,13 +6,17 @@
 #
 
 require 'pp'
-#require 'ostruct'
+require 'yaml'
 
 require 'cevennes'
-
 
 #def jruby?
 #
 #  !! RUBY_PLATFORM.match(/java/)
 #end
+
+def paml(x)
+
+  puts(YAML.dump(x))
+end
 
