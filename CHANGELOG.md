@@ -2,9 +2,10 @@
 # CHANGELOG.md
 
 
-## cevennes 0.10.0  not yet released
+## cevennes 0.10.0  released 2018-09-03
 
 - Weave in additions at the right spot
+- Indicate line numbers
 
 
 ## cevennes 0.9.0  released 2018-09-03
