@@ -44,10 +44,15 @@ module Cevennes
 
     protected
 
+    def strip(row)
+
+      row.collect { |cell| cell.is_a?(String) ? cell.strip : cell }
+    end
+
     def hash(version, id, csv)
 
       csva = ::CSV.parse(reencode(csv))
-        .each_with_index.collect { |row, i| [ 1 + i, row ] }
+        .each_with_index.collect { |row, i| [ 1 + i, strip(row) ] }
         .reject { |i, row| row.compact.empty? }
         .drop_while { |i, row| ! row.include?(id) }
 

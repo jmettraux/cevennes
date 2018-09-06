@@ -170,6 +170,37 @@ XXXid,name,age,city
         IndexError, 'id "id" not found in new CSV'
       )
     end
+
+    it 'trims keys' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+id, name,age , city , county
+0,John,33,Alexandria,Yorkshire
+1,Jean-Baptiste,44,Galileia,Lancashire
+4,Matthew,20,Beth,Essex
+      }.strip + "\n"
+
+      d = Cevennes.diff('name', cvs0, cvs1)
+
+      expect(
+        d[0]
+      ).to eq(
+        [ 'keys',
+          [ 1, %w[ id name age ] ],
+          [ 1, %w[ id name age city county ] ] ]
+      )
+      expect(
+        d[1]
+      ).to eq(
+        [ 'stats', { '!' => 2, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
+      )
+    end
   end
 end
 
