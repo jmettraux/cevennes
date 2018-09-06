@@ -25,7 +25,7 @@ describe Cevennes do
         d[1]
       ).to eq([
         'stats',
-        { '=' => 8, '!' => 1, '-' => 1, '+' => 2, 'l0' => 9, 'l1' => 10 }
+        { '=' => 8, '!' => 1, '-' => 1, '+' => 2, 'l0' => 10, 'l1' => 11 }
       ])
 
       expect(
@@ -62,9 +62,41 @@ describe Cevennes do
       expect(d3[3]).to eq(19)
       expect(d3[4][0, 4]).to eq([ nil, 'US037833BF64', 'Apple Inc', '2.700' ])
       expect(d3[4][8, 2]).to eq([ '97.6', '98.6' ])
+    end
 
-#      dn = d.find { |r| r[0] == '+' }
-#pp dn
+    it 'works (vanilla example)' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,44
+4,Matthew,20
+      }.strip + "\n"
+
+      d = Cevennes.diff('id', cvs0, cvs1)
+
+      expect(
+        d
+      ).to eq([
+        [ 'keys', [ 1, [ 'id', 'name', 'age' ] ],
+                  [ 1, [ 'id', 'name', 'age' ] ] ],
+        [ 'stats',
+          { '=' => 1, '!' => 1, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
+        [ '=', 2, [ '0', 'John', '33'], 2, nil ],
+        [ '!', 3, [ '1', 'Jean-Baptiste', '43' ],
+               3, [ '1', 'Jean-Baptiste', '44' ] ],
+        [ '-', 4, [ '3', 'Luke', '21'], -1, nil ],
+        [ '+', -1, nil, 4, [ '4', 'Matthew', '20' ] ]
+      ])
+    end
+
+    it 'works (key alterations)' do
     end
   end
 end

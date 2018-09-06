@@ -36,8 +36,10 @@ module Cevennes
           d.insert(i, [ '+', -1, nil, lnum, line ]) }
 
       s = d.inject({}) { |h, (a, _, _)| h[a] = (h[a] || 0) + 1; h }
-      s['l0'] = h0.length - 1
-      s['l1'] = h1.length - 1
+      s['l0'] = h0.length
+      s['l1'] = h1.length
+      #s['ll0'] = s['='] + s['!'] + s['-']
+      #s['ll1'] = s['='] + s['!'] + s['+']
 
       [ [ 'keys', ks0, ks1 ], [ 'stats', s ] ] + d
     end
