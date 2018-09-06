@@ -97,6 +97,42 @@ id,name,age
     end
 
     it 'works (key alterations)' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+id,name,age,city
+0,John,33,Alexandria
+1,Jean-Baptiste,44,Galileia
+4,Matthew,20,Beth
+      }.strip + "\n"
+
+      d = Cevennes.diff('id', cvs0, cvs1)
+
+      expect(
+        d
+      ).to eq([
+        [ 'keys', [ 1, [ 'id', 'name', 'age' ] ],
+                  [ 1, [ 'id', 'name', 'age', 'city' ] ] ],
+        [ 'stats',
+          { '!' => 2, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
+        [ '!',
+          2, ['0', 'John', '33' ],
+          2, ['0', 'John', '33', 'Alexandria' ] ],
+        [ '!',
+          3, [ '1', 'Jean-Baptiste', '43' ],
+          3, [ '1', 'Jean-Baptiste', '44', 'Galileia' ] ],
+        [ '-',
+          4, [ '3', 'Luke', '21' ],
+          -1, nil ],
+        [ '+',
+          -1, nil,
+          4, [ '4', 'Matthew', '20', 'Beth' ] ]
+      ])
     end
   end
 end
