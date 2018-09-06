@@ -10,8 +10,8 @@ module Cevennes
 
     def diff(id, csv0, csv1)
 
-      h0 = hash(id, csv0)
-      h1 = hash(id, csv1)
+      h0 = hash('old', id, csv0)
+      h1 = hash('new', id, csv1)
 
       ks0 = h0.delete(:keys)
       ks1 = h1.delete(:keys)
@@ -38,20 +38,21 @@ module Cevennes
       s = d.inject({}) { |h, (a, _, _)| h[a] = (h[a] || 0) + 1; h }
       s['l0'] = h0.length
       s['l1'] = h1.length
-      #s['ll0'] = s['='] + s['!'] + s['-']
-      #s['ll1'] = s['='] + s['!'] + s['+']
 
       [ [ 'keys', ks0, ks1 ], [ 'stats', s ] ] + d
     end
 
     protected
 
-    def hash(id, csv)
+    def hash(version, id, csv)
 
       csva = ::CSV.parse(reencode(csv))
         .each_with_index.collect { |row, i| [ 1 + i, row ] }
         .reject { |i, row| row.compact.empty? }
         .drop_while { |i, row| ! row.include?(id) }
+
+      fail ::IndexError.new("id #{id.inspect} not found in #{version} CSV") \
+        if csva.empty?
 
       idi = csva[0][1].index(id)
 

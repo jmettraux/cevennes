@@ -4,6 +4,8 @@
 
 ## cevennes 0.11.0  not yet released
 
+- Fail with IndexError on missing id in CSV old or new
+
 
 ## cevennes 0.11.0  released 2018-09-06
 

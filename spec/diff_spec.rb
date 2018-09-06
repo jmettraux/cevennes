@@ -134,6 +134,42 @@ id,name,age,city
           4, [ '4', 'Matthew', '20', 'Beth' ] ]
       ])
     end
+
+    it 'returns nil if there is no id in the old CSV' do
+
+      cvs0 = %{
+XXXid,name,age
+0,John,33
+      }.strip + "\n"
+      cvs1 = %{
+id,name,age,city
+0,John,33,Alexandria
+      }.strip + "\n"
+
+      expect {
+        Cevennes.diff('id', cvs0, cvs1)
+      }.to raise_error(
+        IndexError, 'id "id" not found in old CSV'
+      )
+    end
+
+    it 'returns nil if there is no id in the new CSV' do
+
+      cvs0 = %{
+id,name,age
+1,Jean-Baptiste,43
+      }.strip + "\n"
+      cvs1 = %{
+XXXid,name,age,city
+1,Jean-Baptiste,44,Galileia
+      }.strip + "\n"
+
+      expect {
+        Cevennes.diff('id', cvs0, cvs1)
+      }.to raise_error(
+        IndexError, 'id "id" not found in new CSV'
+      )
+    end
   end
 end
 
