@@ -19,7 +19,13 @@ Diffs CSVs by lines, focusing on a single ID
   }.strip
 
   s.metadata = {
-    'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md'
+    'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md',
+    'documentation_uri' => s.homepage,
+    'bug_tracker_uri' => s.homepage + '/issues',
+    #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
+    'homepage_uri' =>  s.homepage,
+    'source_code_uri' => s.homepage,
+    #'wiki_uri' => s.homepage + '/wiki',
   }
 
   #s.files = `git ls-files`.split("\n")

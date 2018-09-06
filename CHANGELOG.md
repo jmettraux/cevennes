@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## cevennes 0.11.0  released 2018-09-06
+## cevennes 0.13.0  not yet released
+
+
+## cevennes 0.12.0  released 2018-09-06
 
 - Fail with IndexError on missing id in CSV old or new
 
