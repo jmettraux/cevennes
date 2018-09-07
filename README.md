@@ -32,8 +32,8 @@ d = Cevennes.diff('id', cvs0, cvs1)
 `d` will yield:
 ```ruby
 [
-  [ 'keys', [ 1, [ 'id', 'name', 'age' ] ],
-            [ 1, [ 'id', 'name', 'age' ] ] ],
+  [ 'keys', 1, [ 'id', 'name', 'age' ],
+            1, [ 'id', 'name', 'age' ] ],
   [ 'stats',
     { '=' => 1, '!' => 1, '-' => 1, '+' => 1,
       'l0' => 3, 'l1' => 3 } ],

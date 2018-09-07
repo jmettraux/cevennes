@@ -84,8 +84,8 @@ id,name,age
       expect(
         d
       ).to eq([
-        [ 'keys', [ 1, [ 'id', 'name', 'age' ] ],
-                  [ 1, [ 'id', 'name', 'age' ] ] ],
+        [ 'keys', 1, [ 'id', 'name', 'age' ],
+                  1, [ 'id', 'name', 'age' ] ],
         [ 'stats',
           { '=' => 1, '!' => 1, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
         [ '=', 2, [ '0', 'John', '33'], 2, nil ],
@@ -116,8 +116,8 @@ id,name,age,city
       expect(
         d
       ).to eq([
-        [ 'keys', [ 1, [ 'id', 'name', 'age' ] ],
-                  [ 1, [ 'id', 'name', 'age', 'city' ] ] ],
+        [ 'keys', 1, [ 'id', 'name', 'age' ],
+                  1, [ 'id', 'name', 'age', 'city' ] ],
         [ 'stats',
           { '!' => 2, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
         [ '!',
@@ -192,8 +192,8 @@ id, name,age , city , county
         d[0]
       ).to eq(
         [ 'keys',
-          [ 1, %w[ id name age ] ],
-          [ 1, %w[ id name age city county ] ] ]
+          1, %w[ id name age ],
+          1, %w[ id name age city county ] ]
       )
       expect(
         d[1]

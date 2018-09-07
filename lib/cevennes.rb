@@ -39,7 +39,7 @@ module Cevennes
       s['l0'] = h0.length
       s['l1'] = h1.length
 
-      [ [ 'keys', ks0, ks1 ], [ 'stats', s ] ] + d
+      [ [ 'keys', *ks0, *ks1 ], [ 'stats', s ] ] + d
     end
 
     protected

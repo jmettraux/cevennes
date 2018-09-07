@@ -4,6 +4,8 @@
 
 ## cevennes 0.14.0  not yet released
 
+- Align the "keys" entry on the =+-! entries
+
 
 ## cevennes 0.13.0  released 2018-09-07
 
