@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 0.14.0  not yet released
+## cevennes 1.0.0  not yet released
 
 - Align the "keys" entry on the =+-! entries
 
