@@ -9,7 +9,7 @@ Diffs CSVs by lines, focusing on a single ID
 
 ## usage
 
-Given two CSV strings and an identifier name, cevennes may compute a diff:
+Given two CSV strings and an identifier name (a column name), cevennes may compute a diff:
 ```ruby
 require 'cevennes'
 
