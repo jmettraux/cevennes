@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'John Mettraux' ]
   s.email = [ 'jmettraux@gmail.com' ]
-  s.homepage = 'http://github.com/jmettraux/cevennes'
+  s.homepage = 'https://github.com/jmettraux/cevennes'
   s.license = 'MIT'
   s.summary = 'CSV diff library'
 
