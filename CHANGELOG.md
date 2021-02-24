@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## cevennes 1.1.0  not yet released
+
+
 ## cevennes 1.0.0  released 2018-09-07
 
 - Align the "keys" entry on the =+-! entries
