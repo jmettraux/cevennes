@@ -4,7 +4,7 @@ require 'csv'
 
 module Cevennes
 
-  VERSION = '1.1.0'
+  VERSION = '1.1.1'
 
   class << self
 
