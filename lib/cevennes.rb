@@ -49,29 +49,28 @@ module Cevennes
       row.collect { |cell| cell.is_a?(String) ? cell.strip : cell }
     end
 
-    DOWNCASE_IF_POSSIBLE =
-      lambda { |x| x.respond_to?(:downcase) ? x.downcase : x }
-    IDENTITY =
-      lambda { |x| x }
+    DOWNCASE = lambda { |x| x.respond_to?(:downcase) ? x.downcase : x }
+    IDENTITY = lambda { |x| x }
 
     def hash(version, id, csv, opts)
 
-      d = opts[:ignore_key_case] ? DOWNCASE_IF_POSSIBLE : IDENTITY
+      d = opts[:ignore_key_case] ? DOWNCASE : IDENTITY
+      did = d[id]
 
       csva = ::CSV.parse(reencode(csv))
         .each_with_index.collect { |row, i| [ 1 + i, strip(row) ] }
         .reject { |i, row| row.compact.empty? }
-        .drop_while { |i, row| ! row.find { |cell| d[cell] == id } }
+        .drop_while { |i, row| ! row.find { |cell| d[cell] == did } }
 
       fail ::IndexError.new("id #{id.inspect} not found in #{version} CSV") \
         if csva.empty?
 
       csva[0][1] =
         opts[:ignore_key_case] ?
-        csva[0][1].collect { |c| DOWNCASE_IF_POSSIBLE[c] } :
+        csva[0][1].collect { |c| DOWNCASE[c] } :
         csva[0][1]
 
-      idi = csva[0][1].index(id)
+      idi = csva[0][1].index(did)
 
       csva[1..-1]
         .inject({ keys: csva[0] }) { |h, (i, row)|

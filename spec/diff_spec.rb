@@ -255,6 +255,38 @@ Id,Name,Age
         [ '+', -1, nil, 4, [ '4', 'Matthew', '20' ] ]
       ])
     end
+
+    it 'works ignore_key_case: true, take 2' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+Id,Name,Age
+0,John,33
+1,Jean-Baptiste,44
+4,Matthew,20
+      }.strip + "\n"
+
+      d = Cevennes.diff('Id', cvs0, cvs1, ignore_key_case: true)
+
+      expect(
+        d
+      ).to eq([
+        [ 'keys', 1, [ 'id', 'name', 'age' ],
+                  1, [ 'id', 'name', 'age' ] ],
+        [ 'stats',
+          { '=' => 1, '!' => 1, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
+        [ '=', 2, [ '0', 'John', '33'], 2, nil ],
+        [ '!', 3, [ '1', 'Jean-Baptiste', '43' ],
+               3, [ '1', 'Jean-Baptiste', '44' ] ],
+        [ '-', 4, [ '3', 'Luke', '21'], -1, nil ],
+        [ '+', -1, nil, 4, [ '4', 'Matthew', '20' ] ]
+      ])
+    end
   end
 end
 
