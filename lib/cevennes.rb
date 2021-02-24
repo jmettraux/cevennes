@@ -8,10 +8,10 @@ module Cevennes
 
   class << self
 
-    def diff(id, csv0, csv1)
+    def diff(id, csv0, csv1, opts={})
 
-      h0 = hash('old', id, csv0)
-      h1 = hash('new', id, csv1)
+      h0 = hash('old', id, csv0, opts)
+      h1 = hash('new', id, csv1, opts)
 
       ks0 = h0.delete(:keys)
       ks1 = h1.delete(:keys)
@@ -49,15 +49,27 @@ module Cevennes
       row.collect { |cell| cell.is_a?(String) ? cell.strip : cell }
     end
 
-    def hash(version, id, csv)
+    DOWNCASE_IF_POSSIBLE =
+      lambda { |x| x.respond_to?(:downcase) ? x.downcase : x }
+    IDENTITY =
+      lambda { |x| x }
+
+    def hash(version, id, csv, opts)
+
+      d = opts[:ignore_key_case] ? DOWNCASE_IF_POSSIBLE : IDENTITY
 
       csva = ::CSV.parse(reencode(csv))
         .each_with_index.collect { |row, i| [ 1 + i, strip(row) ] }
         .reject { |i, row| row.compact.empty? }
-        .drop_while { |i, row| ! row.include?(id) }
+        .drop_while { |i, row| ! row.find { |cell| d[cell] == id } }
 
       fail ::IndexError.new("id #{id.inspect} not found in #{version} CSV") \
         if csva.empty?
+
+      csva[0][1] =
+        opts[:ignore_key_case] ?
+        csva[0][1].collect { |c| DOWNCASE_IF_POSSIBLE[c] } :
+        csva[0][1]
 
       idi = csva[0][1].index(id)
 

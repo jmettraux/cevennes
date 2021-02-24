@@ -27,6 +27,9 @@ cvs1 = %{
 }.strip + "\n"
 
 d = Cevennes.diff('id', cvs0, cvs1)
+
+#d = Cevennes.diff('id', cvs0, cvs1, ignore_key_case: true)
+  # when the key case should be ignored ("Id" == "id")
 ```
 
 `d` will yield:

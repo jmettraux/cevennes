@@ -201,6 +201,60 @@ id, name,age , city , county
         [ 'stats', { '!' => 2, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
       )
     end
+
+    it 'fails when key case is different' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+Id,Name,Age
+0,John,33
+1,Jean-Baptiste,44
+4,Matthew,20
+      }.strip + "\n"
+
+      expect {
+        Cevennes.diff('id', cvs0, cvs1)
+      }.to raise_error(
+        IndexError, 'id "id" not found in new CSV'
+      )
+    end
+
+    it 'works ignore_key_case: true' do
+
+      cvs0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+      }.strip + "\n"
+      cvs1 = %{
+Id,Name,Age
+0,John,33
+1,Jean-Baptiste,44
+4,Matthew,20
+      }.strip + "\n"
+
+      d = Cevennes.diff('id', cvs0, cvs1, ignore_key_case: true)
+
+      expect(
+        d
+      ).to eq([
+        [ 'keys', 1, [ 'id', 'name', 'age' ],
+                  1, [ 'id', 'name', 'age' ] ],
+        [ 'stats',
+          { '=' => 1, '!' => 1, '-' => 1, '+' => 1, 'l0' => 3, 'l1' => 3 } ],
+        [ '=', 2, [ '0', 'John', '33'], 2, nil ],
+        [ '!', 3, [ '1', 'Jean-Baptiste', '43' ],
+               3, [ '1', 'Jean-Baptiste', '44' ] ],
+        [ '-', 4, [ '3', 'Luke', '21'], -1, nil ],
+        [ '+', -1, nil, 4, [ '4', 'Matthew', '20' ] ]
+      ])
+    end
   end
 end
 

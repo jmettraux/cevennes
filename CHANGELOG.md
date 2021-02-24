@@ -4,6 +4,8 @@
 
 ## cevennes 1.1.0  not yet released
 
+- Introduce `ignore_key_case: true`
+
 
 ## cevennes 1.0.0  released 2018-09-07
 
