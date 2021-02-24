@@ -93,9 +93,11 @@ module Cevennes
 
       %w[ Windows-1252 ISO-8859-1 UTF-8 ].each do |e|
         ss = s.force_encoding(e).encode('UTF-8') rescue nil
-        break ss if ss
+        return ss if ss
         nil
       end
+
+      nil
     end
   end
 end
