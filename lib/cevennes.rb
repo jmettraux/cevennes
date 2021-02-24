@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'csv'
 
@@ -85,12 +86,14 @@ module Cevennes
     #  ::CSV.generate(encoding: 'UTF-8') { |csv| csv << row }.strip
     #end
 
+    ENCODINGS = %w[ Windows-1252 ISO-8859-1 UTF-8 ].freeze
+
     def reencode(s)
 
       #s = unzip(s) if s[0, 2] == 'PK'
         # no dependency on rubyzip
 
-      %w[ Windows-1252 ISO-8859-1 UTF-8 ].each do |e|
+      ENCODINGS.each do |e|
         ss = s.force_encoding(e).encode('UTF-8') rescue nil
         return ss if ss
         nil
