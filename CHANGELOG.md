@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 1.1.0  not yet released
+## cevennes 1.1.0  released 2021-02-24
 
 - Introduce `ignore_key_case: true`
 
