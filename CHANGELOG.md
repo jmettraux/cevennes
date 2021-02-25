@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 1.1.1  not yet released
+## cevennes 1.1.1  released 2021-02-25
 
 - Refine UTF-8 re-encoding
 - Fix `ignore_key_case: true` :-(
