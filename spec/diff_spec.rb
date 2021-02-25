@@ -14,10 +14,10 @@ describe Cevennes do
 
     it 'works' do
 
-      cvs0 = File.read('spec/list0.csv')
-      cvs1 = File.read('spec/list1.csv')
+      csv0 = File.read('spec/list0.csv')
+      csv1 = File.read('spec/list1.csv')
 
-      d = Cevennes.diff('ISIN / Cusip', cvs0, cvs1)
+      d = Cevennes.diff('ISIN / Cusip', csv0, csv1)
 
       expect(d.length).to eq(14)
 
@@ -66,20 +66,20 @@ describe Cevennes do
 
     it 'works (vanilla example)' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,44
 4,Matthew,20
       }.strip + "\n"
 
-      d = Cevennes.diff('id', cvs0, cvs1)
+      d = Cevennes.diff('id', csv0, csv1)
 
       expect(
         d
@@ -98,20 +98,20 @@ id,name,age
 
     it 'works (key alterations)' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 id,name,age,city
 0,John,33,Alexandria
 1,Jean-Baptiste,44,Galileia
 4,Matthew,20,Beth
       }.strip + "\n"
 
-      d = Cevennes.diff('id', cvs0, cvs1)
+      d = Cevennes.diff('id', csv0, csv1)
 
       expect(
         d
@@ -137,17 +137,17 @@ id,name,age,city
 
     it 'returns nil if there is no id in the old CSV' do
 
-      cvs0 = %{
+      csv0 = %{
 XXXid,name,age
 0,John,33
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 id,name,age,city
 0,John,33,Alexandria
       }.strip + "\n"
 
       expect {
-        Cevennes.diff('id', cvs0, cvs1)
+        Cevennes.diff('id', csv0, csv1)
       }.to raise_error(
         IndexError, 'id "id" not found in old CSV'
       )
@@ -155,17 +155,17 @@ id,name,age,city
 
     it 'returns nil if there is no id in the new CSV' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 1,Jean-Baptiste,43
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 XXXid,name,age,city
 1,Jean-Baptiste,44,Galileia
       }.strip + "\n"
 
       expect {
-        Cevennes.diff('id', cvs0, cvs1)
+        Cevennes.diff('id', csv0, csv1)
       }.to raise_error(
         IndexError, 'id "id" not found in new CSV'
       )
@@ -173,20 +173,20 @@ XXXid,name,age,city
 
     it 'trims keys' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 id, name,age , city , county
 0,John,33,Alexandria,Yorkshire
 1,Jean-Baptiste,44,Galileia,Lancashire
 4,Matthew,20,Beth,Essex
       }.strip + "\n"
 
-      d = Cevennes.diff('name', cvs0, cvs1)
+      d = Cevennes.diff('name', csv0, csv1)
 
       expect(
         d[0]
@@ -204,13 +204,13 @@ id, name,age , city , county
 
     it 'fails when key case is different' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 Id,Name,Age
 0,John,33
 1,Jean-Baptiste,44
@@ -218,7 +218,7 @@ Id,Name,Age
       }.strip + "\n"
 
       expect {
-        Cevennes.diff('id', cvs0, cvs1)
+        Cevennes.diff('id', csv0, csv1)
       }.to raise_error(
         IndexError, 'id "id" not found in new CSV'
       )
@@ -226,20 +226,20 @@ Id,Name,Age
 
     it 'works ignore_key_case: true' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 Id,Name,Age
 0,John,33
 1,Jean-Baptiste,44
 4,Matthew,20
       }.strip + "\n"
 
-      d = Cevennes.diff('id', cvs0, cvs1, ignore_key_case: true)
+      d = Cevennes.diff('id', csv0, csv1, ignore_key_case: true)
 
       expect(
         d
@@ -258,20 +258,20 @@ Id,Name,Age
 
     it 'works ignore_key_case: true, take 2' do
 
-      cvs0 = %{
+      csv0 = %{
 id,name,age
 0,John,33
 1,Jean-Baptiste,43
 3,Luke,21
       }.strip + "\n"
-      cvs1 = %{
+      csv1 = %{
 Id,Name,Age
 0,John,33
 1,Jean-Baptiste,44
 4,Matthew,20
       }.strip + "\n"
 
-      d = Cevennes.diff('Id', cvs0, cvs1, ignore_key_case: true)
+      d = Cevennes.diff('Id', csv0, csv1, ignore_key_case: true)
 
       expect(
         d
@@ -286,6 +286,31 @@ Id,Name,Age
         [ '-', 4, [ '3', 'Luke', '21'], -1, nil ],
         [ '+', -1, nil, 4, [ '4', 'Matthew', '20' ] ]
       ])
+    end
+
+    it 'works with various encodings' do
+
+      csv0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+3,René,21
+      }.strip + "\n"
+      csv1 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,44
+2,Matthew,20
+3,René,21
+      }.strip + "\n"
+
+      csv0 = csv0.encode('Windows-1252').freeze
+      csv1 = csv1.encode('ISO-8859-1').freeze
+
+      d = Cevennes.diff('Id', csv0, csv1, ignore_key_case: true)
+
+      expect(d.last).to eq([ '=', 5, [ '3', 'René', '21' ], 5, nil ])
     end
   end
 end

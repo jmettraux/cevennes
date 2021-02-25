@@ -4,6 +4,7 @@
 
 ## cevennes 1.1.1  not yet released
 
+- Refine UTF-8 re-encoding
 - Fix `ignore_key_case: true` :-(
 - Clarify reencode
 

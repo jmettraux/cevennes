@@ -93,10 +93,13 @@ module Cevennes
       #s = unzip(s) if s[0, 2] == 'PK'
         # no dependency on rubyzip
 
+      #return s if s.encoding == Encoding::UTF_8
+        # NO! have to force_encoding for UTF-8 as well!
+
+      s = s.dup if s.frozen?
+
       ENCODINGS.each do |e|
-        ss = s.force_encoding(e).encode('UTF-8') rescue nil
-        return ss if ss
-        nil
+        (return s.force_encoding(e).encode('UTF-8')) rescue nil
       end
 
       nil
