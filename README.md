@@ -2,7 +2,7 @@
 # cevennes
 
 [![tests](https://github.com/jmettraux/cevennes/workflows/test/badge.svg)](https://github.com/jmettraux/cevennes/actions)
-[![Gem Version](https://badge.fury.io/rb/fugit.svg)](http://badge.fury.io/rb/fugit)
+[![Gem Version](https://badge.fury.io/rb/cevennes.svg)](http://badge.fury.io/rb/cevennes)
 
 Diffs CSVs by lines, focusing on a single ID
 
