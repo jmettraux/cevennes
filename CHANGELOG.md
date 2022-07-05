@@ -4,6 +4,8 @@
 
 ## cevennes 1.2.0  not yet released
 
+- Introduce `drop_equals: true`
+
 
 ## cevennes 1.1.1  released 2021-02-25
 

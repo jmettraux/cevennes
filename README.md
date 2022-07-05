@@ -57,6 +57,44 @@ The second entry is a summary of the changes, altered `!` line count, removed `-
 The remaining entries are the (non-)changes themselves, from line 1 to the end.
 
 
+### drop_equals: true
+
+```ruby
+require 'cevennes'
+
+cvs0 = %{
+  id,name,age
+  0,John,33
+  1,Jean-Baptiste,43
+  3,Luke,21
+}.strip + "\n"
+cvs1 = %{
+  id,name,age
+  0,John,33
+  1,Jean-Baptiste,44
+  4,Matthew,20
+}.strip + "\n"
+
+d = Cevennes.diff('id', cvs0, cvs1, drop_equals: true)
+  # ==>
+  [
+    [ 'keys', 1, [ 'id', 'name', 'age' ],
+              1, [ 'id', 'name', 'age' ] ],
+    [ 'stats',
+      { '=' => 1, '!' => 1, '-' => 1, '+' => 1,
+        'l0' => 3, 'l1' => 3 } ],
+    [ '!',  3, [ '1', 'Jean-Baptiste', '43' ],
+            3, [ '1', 'Jean-Baptiste', '44' ] ],
+    [ '-',  4, [ '3', 'Luke', '21'],
+           -1, nil ],
+    [ '+', -1, nil,
+            4, [ '4', 'Matthew', '20' ] ]
+  ]
+    #
+    # the "=" entries are not included
+```
+
+
 ## LICENSE
 
 MIT, see [LICENSE.txt](LICENSE.txt)

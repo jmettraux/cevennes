@@ -40,6 +40,8 @@ module Cevennes
       s['l0'] = h0.length
       s['l1'] = h1.length
 
+      d = d.reject { |e| e[0] == '=' } if opts[:drop_equals]
+
       [ [ 'keys', *ks0, *ks1 ], [ 'stats', s ] ] + d
     end
 

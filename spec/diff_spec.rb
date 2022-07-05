@@ -288,6 +288,40 @@ Id,Name,Age
       ])
     end
 
+    it 'works drop_equals: true' do
+
+      csv0 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+2,Vladimir,30
+3,Luke,21
+      }.strip + "\n"
+      csv1 = %{
+id,name,age
+0,John,33
+1,Jean-Baptiste,44
+2,Vladimir,30
+4,Matthew,20
+      }.strip + "\n"
+
+      d = Cevennes.diff('id', csv0, csv1, drop_equals: true)
+
+      expect(
+        d
+      ).to eq([
+        ["keys", 1, ["id", "name", "age"], 1, ["id", "name", "age"]],
+        ["stats", {"="=>2, "!"=>1, "-"=>1, "+"=>1, "l0"=>4, "l1"=>4}],
+        ["!",
+          3, ["1", "Jean-Baptiste", "43"],
+          3, ["1", "Jean-Baptiste", "44"]],
+        ["-",
+          5, ["3", "Luke", "21"], -1, nil],
+        ["+",
+          -1, nil, 5, ["4", "Matthew", "20"]]
+      ])
+    end
+
     it 'works with various encodings' do
 
       csv0 = %{
