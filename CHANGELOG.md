@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 1.3.0  not yet released
+## cevennes 1.3.0  released 2022-07-24
 
 - Diff already parsed CSV as well
 
