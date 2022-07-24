@@ -56,6 +56,8 @@ The second entry is a summary of the changes, altered `!` line count, removed `-
 
 The remaining entries are the (non-)changes themselves, from line 1 to the end.
 
+Since 1.3.0, Cevennes accepts CSV strings and parsed CSV (array of arrays).
+
 
 ### drop_equals: true
 

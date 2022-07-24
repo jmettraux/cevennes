@@ -60,7 +60,7 @@ module Cevennes
       d = opts[:ignore_key_case] ? DOWNCASE : IDENTITY
       did = d[id]
 
-      csva = ::CSV.parse(reencode(csv))
+      csva = parse(csv)
         .each_with_index.collect { |row, i| [ 1 + i, strip(row) ] }
         .reject { |i, row| row.compact.empty? }
         .drop_while { |i, row| ! row.find { |cell| d[cell] == did } }
@@ -82,6 +82,12 @@ module Cevennes
             h[k] = [ i, row ] if k
           end
           h }
+    end
+
+    def parse(csv)
+
+      return csv if csv.is_a?(Array)
+      ::CSV.parse(reencode(csv))
     end
 
     #def deflate(row)

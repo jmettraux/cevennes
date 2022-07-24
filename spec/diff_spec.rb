@@ -346,6 +346,28 @@ id,name,age
 
       expect(d.last).to eq([ '=', 5, [ '3', 'René', '21' ], 5, nil ])
     end
+
+    it 'works with always parsed CSVs' do
+
+      csv0 = CSV.parse(%{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+3,René,21
+      }.strip + "\n")
+      csv1 = CSV.parse(%{
+id,name,age
+0,John,33
+1,Jean-Baptiste,44
+2,Matthew,20
+3,René,21
+      }.strip + "\n")
+
+      d = Cevennes.diff('id', csv0, csv1)
+
+      expect(d.last).to eq([ '=', 5, [ '3', 'René', '21' ], 5, nil ])
+    end
   end
 end
 

@@ -4,6 +4,8 @@
 
 ## cevennes 1.3.0  not yet released
 
+- Diff already parsed CSV as well
+
 
 ## cevennes 1.2.0  released 2022-07-05
 
