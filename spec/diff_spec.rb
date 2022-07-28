@@ -368,6 +368,72 @@ id,name,age
 
       expect(d.last).to eq([ '=', 5, [ '3', 'René', '21' ], 5, nil ])
     end
+
+    it 'works when a column is added' do
+
+      csv0 = CSV.parse(%{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+3,René,21
+      }.strip + "\n")
+      csv1 = CSV.parse(%{
+id,name,age,nick
+0,John,33,Jack
+1,Jean-Baptiste,44,Bat
+2,Matthew,20,Matt
+3,René,21,Ren
+      }.strip + "\n")
+
+      d = Cevennes.diff('id', csv0, csv1)
+
+      expect(d).to eq(
+        [["keys", 1, ["id", "name", "age"], 1, ["id", "name", "age", "nick"]],
+         ["stats", {"!"=>3, "+"=>1, "l0"=>3, "l1"=>4}],
+         ["!", 2, ["0", "John", "33"], 2, ["0", "John", "33", "Jack"]],
+         ["!",
+          3,
+          ["1", "Jean-Baptiste", "43"],
+          3,
+          ["1", "Jean-Baptiste", "44", "Bat"]],
+         ["+", -1, nil, 4, ["2", "Matthew", "20", "Matt"]],
+         ["!", 5, ["3", "René", "21"], 5, ["3", "René", "21", "Ren"]]]
+      )
+    end
+
+    it 'works when a column is removed' do
+
+      csv0 = CSV.parse(%{
+id,name,age,nick
+0,John,33,Jack
+1,Jean-Baptiste,44,Bat
+2,Matthew,20,Matt
+3,René,21,Ren
+      }.strip + "\n")
+      csv1 = CSV.parse(%{
+id,name,age
+0,John,33
+1,Jean-Baptiste,43
+3,Luke,21
+3,René,21
+      }.strip + "\n")
+
+      d = Cevennes.diff('id', csv0, csv1)
+
+      expect(d).to eq(
+        [["keys", 1, ["id", "name", "age", "nick"], 1, ["id", "name", "age"]],
+         ["stats", {"!"=>3, "-"=>1, "l0"=>4, "l1"=>3}],
+         ["!", 2, ["0", "John", "33", "Jack"], 2, ["0", "John", "33"]],
+         ["!",
+          3,
+          ["1", "Jean-Baptiste", "44", "Bat"],
+          3,
+          ["1", "Jean-Baptiste", "43"]],
+         ["-", 4, ["2", "Matthew", "20", "Matt"], -1, nil],
+         ["!", 5, ["3", "René", "21", "Ren"], 5, ["3", "René", "21"]]]
+      )
+    end
   end
 end
 
