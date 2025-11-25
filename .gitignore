@@ -1,5 +1,6 @@
 
 .vim*
+*.swp
 
 pkg/
 
@@ -15,4 +16,7 @@ pkg/
 .todo.md
 
 Gemfile.lock
+
+.chat.md
+.openai.*
 
