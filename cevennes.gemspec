@@ -39,6 +39,7 @@ Diffs CSVs by lines, focusing on a single ID
 
   #s.add_runtime_dependency 'tzinfo'
   #s.add_runtime_dependency 'raabro', '~> 1.1'
+  s.add_runtime_dependency 'csv'
 
   s.add_development_dependency 'rspec', '~> 3.7'
 
