@@ -21,4 +21,5 @@ Gemfile.lock
 .openai.*
 .claude*
 .klaude*
+.deep*
 
