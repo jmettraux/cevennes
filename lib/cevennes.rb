@@ -5,7 +5,7 @@ require 'csv'
 
 module Cevennes
 
-  VERSION = '1.3.0'
+  VERSION = '1.4.0'
 
   class << self
 
@@ -60,7 +60,7 @@ module Cevennes
       d = opts[:ignore_key_case] ? DOWNCASE : IDENTITY
       did = d[id]
 
-      csva = parse(csv)
+      csva = parse(csv, opts)
         .each_with_index.collect { |row, i| [ 1 + i, strip(row) ] }
         .reject { |i, row| row.compact.empty? }
         .drop_while { |i, row| ! row.find { |cell| d[cell] == did } }
@@ -84,33 +84,25 @@ module Cevennes
           h }
     end
 
-    def parse(csv)
+    def parse(csv, opts=nil)
 
-      return csv if csv.is_a?(Array)
-      ::CSV.parse(reencode(csv))
+      csv.is_a?(Array) ? csv :
+      ::CSV.parse(reencode(csv, opts))
     end
 
-    #def deflate(row)
-    #  ::CSV.generate(encoding: 'UTF-8') { |csv| csv << row }.strip
-    #end
+    def reencode(s, opts)
 
-    ENCODINGS = %w[ Windows-1252 ISO-8859-1 UTF-8 ].freeze
+      enc = opts ? opts[:encoding] : nil
 
-    def reencode(s)
+      (enc ? [ enc ] : [ 'UTF-8', 'Windows-1252', 'ISO-88591' ])
+        .each do |enc|
+          s1 = s.dup.force_encoding(enc); next unless s1.valid_encoding?
+          return s1.encode('UTF-8')
+        rescue Encoding::UndefinedConversionError
+          next
+        end
 
-      #s = unzip(s) if s[0, 2] == 'PK'
-        # no dependency on rubyzip
-
-      #return s if s.encoding == Encoding::UTF_8
-        # NO! have to force_encoding for UTF-8 as well!
-
-      s = s.dup if s.frozen?
-
-      ENCODINGS.each do |e|
-        (return s.force_encoding(e).encode('UTF-8')) rescue nil
-      end
-
-      nil
+      fail "failed to reencode #{(s.encoding rescue '(unknown encoding)')}"
     end
   end
 end
