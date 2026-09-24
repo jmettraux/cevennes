@@ -94,7 +94,7 @@ module Cevennes
 
       enc = opts ? opts[:encoding] : nil
 
-      (enc ? [ enc ] : [ 'UTF-8', 'Windows-1252', 'ISO-88591' ])
+      (enc ? [ enc ] : [ 'UTF-8', 'Windows-1252', 'ISO-8859-1' ])
         .each do |enc|
           s1 = s.dup.force_encoding(enc); next unless s1.valid_encoding?
           return s1.encode('UTF-8')
