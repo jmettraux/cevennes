@@ -11,8 +11,8 @@ module Cevennes
 
     def diff(id, csv0, csv1, opts={})
 
-      h0 = hash('old', id, csv0, opts)
-      h1 = hash('new', id, csv1, opts)
+      h0 = hajh('old', id, csv0, opts)
+      h1 = hajh('new', id, csv1, opts)
 
       ks0 = h0.delete(:keys)
       ks1 = h1.delete(:keys)
@@ -52,7 +52,9 @@ module Cevennes
     DOWNCASE = lambda { |x| x.respond_to?(:downcase) ? x.downcase : x }
     IDENTITY = lambda { |x| x }
 
-    def hash(version, id, csv, opts)
+    # was named "hash", but since it shadowed a core method, let's use "hajh"
+    #
+    def hajh(version, id, csv, opts)
 
       d = opts[:ignore_key_case] ? DOWNCASE : IDENTITY
       did = d[id]
