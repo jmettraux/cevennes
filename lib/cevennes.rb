@@ -49,17 +49,23 @@ module Cevennes
 
       mute_eq = ! opts[:show_eq]
 
+      c =
+        opts[:no_colours] || opts[:no_colors] ||
+        opts[:no_colour] || opts[:no_color] ?
+          Colorato.no_colours :
+          Colorato.colour_if_supported
+
       _, kl0, ks0, kl1, ks1 = diff[0]
       _, stats = diff[1]
 
       o = StringIO.new
 
-      o << "# diff\n"
+      o << c.dg << "# diff\n" << c.rs
 
       o << "* length: #{diff.length}\n"
       o << "\n"
 
-      o << "## keys\n"
+      o << c.dg << "# keys\n" << c.rs
       o << "* l0: #{kl0}\n"
       o << "* ks0.size: #{ks0.size}\n"
       o << "* l1: #{kl1}\n"
@@ -68,16 +74,16 @@ module Cevennes
 
       o << "```ruby\n"
       o << "### ks0\n"
-      o << render_row(ks0, ck: true, rn: kl0) << "\n"
+      o << render_row(ks0, ck: true, rn: kl0, colours: c) << "\n"
       o << "### ks1\n"
       if ks1 == ks0
-        o << "# (identical)\n"
+        o << c.dg << "# (identical)\n" << c.rs
       else
-        o << render_row(ks1, ck: true, rn: kl1) << "\n"
+        o << render_row(ks1, ck: true, rn: kl1, colours: c) << "\n"
       end
       o << "```\n\n"
 
-      o << "## stats\n"
+      o << c.dg << "# stats\n" << c.rs
       o << "```ruby\n" << stats.inspect << "\n```\n"
 
       dis = diff[2..-1]
@@ -92,11 +98,19 @@ module Cevennes
 
         next if mute_eq && (di[0] == '=')
 
+        o <<
+          case di[0]
+          when '+' then c.green
+          when '-' then c.red
+          else c.dg; end
+
         r0 = di[2] ? render_row(di[2], indent: lnl + 3) : ' ' * (lnl + 3)
         r1 = di[4] ? render_row(di[4], indent: lnl + 3) : ' ' * (lnl + 3)
 
         o << di[0] << " %#{lnl}d " % di[1] << r0.lstrip << "\n"
         o << ' ' << " %#{lnl}d " % di[3] << r1.lstrip << "\n"
+
+        o << c.rs
       end
 
       o.string
@@ -190,6 +204,8 @@ module Cevennes
 
     def render_row(row, opts={})
 
+      c = opts[:colours] || Colorato.no_colours
+
       indent = opts[:indent] || 0
       ck = opts[:col_keys] || opts[:ck]
 
@@ -205,13 +221,15 @@ module Cevennes
       row.each_with_index do |cell, i|
 
         id = (ck ? xelcol(1 + i) : '') + (rn ? rn : '') + (ck || rn ? ' ' : '')
-        c = id + cell.inspect + ', '
+        id = c.blue + id + c.rs if id.length > 0
 
-        if indent + line.length + c.length > tw
+        cl = id + cell.inspect + ', '
+
+        if indent + line.length + cl.length > tw
           o << line << "\n"
           line = ni + '  '
         end
-        line += c
+        line += cl
       end
       o << line << ']'
 

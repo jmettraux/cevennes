@@ -30,9 +30,12 @@ build: gemspec_validate
 push: build
 	gem push --otp "$(OTP)" pkg/$(NAME)-$(VERSION).gem
 
-spec:
-	bundle exec rspec
-test: spec
+test:
+	bundle exec proba
+spec: test
+
+colors:
+	bundle exec ruby -rcolorato -e "Colorato.show_colours"
 
 
 .PHONY: count_lines gemspec_validate name cw build push spec
