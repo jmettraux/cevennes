@@ -42,6 +42,76 @@ module Cevennes
       [ [ 'keys', *ks0, *ks1 ], [ 'stats', s ] ] + d
     end
 
+    def to_pretty_s(diff, opts={})
+
+      fail ArgumentError.new("to_pretty_s() expects a diff array") \
+        unless is_diff_array?(diff)
+
+      mute_eq = ! opts[:show_eq]
+
+      _, kl0, ks0, kl1, ks1 = diff[0]
+      _, stats = diff[1]
+
+      o = StringIO.new
+
+      o << "# diff\n"
+
+      o << "* length: #{diff.length}\n"
+      o << "\n"
+
+      o << "## keys\n"
+      o << "* l0: #{kl0}\n"
+      o << "* ks0.size: #{ks0.size}\n"
+      o << "* l1: #{kl1}\n"
+      o << "* ks1.size: #{ks1.size}\n"
+      o << "\n"
+
+      o << "```ruby\n"
+      o << "### ks0\n"
+      o << render_row(ks0, ck: true, rn: kl0) << "\n"
+      o << "### ks1\n"
+      if ks1 == ks0
+        o << "# (identical)\n"
+      else
+        o << render_row(ks1, ck: true, rn: kl1) << "\n"
+      end
+      o << "```\n\n"
+
+      o << "## stats\n"
+      o << "```ruby\n" << stats.inspect << "\n```\n"
+
+      dis = diff[2..-1]
+
+      lnl = dis
+        .inject([]) { |a, di| a << di[1].to_s.length << di[3].to_s.length; a }
+        .max
+
+      o << "## diff\n"
+
+      diff[2..-1].each do |di|
+
+        next if mute_eq && (di[0] == '=')
+
+        r0 = di[2] ? render_row(di[2], indent: lnl + 3) : ' ' * (lnl + 3)
+        r1 = di[4] ? render_row(di[4], indent: lnl + 3) : ' ' * (lnl + 3)
+
+        o << di[0] << " %#{lnl}d " % di[1] << r0.lstrip << "\n"
+        o << ' ' << " %#{lnl}d " % di[3] << r1.lstrip << "\n"
+      end
+
+      o.string
+    end
+
+    def is_diff_array?(x)
+
+      return false unless x.is_a?(Array)
+      return false unless x.length > 1
+      return false unless x.all? { |e| e.is_a?(Array) }
+      return false unless x[0][0] == 'keys'
+      return false unless x[1][0] == 'stats'
+      true
+    end
+
     protected
 
     def strip(row)
@@ -102,6 +172,58 @@ module Cevennes
         end
 
       fail "failed to reencode #{(s.encoding rescue '(unknown encoding)')}"
+    end
+
+    require 'io/console'
+
+    def term_width
+
+      w =
+        ENV['COLUMNS'] ||
+        ($stdout.winsize[1] rescue nil) ||
+        (IO.console.winsize[1] rescue nil) ||
+        (`tput cols`.to_i rescue nil) ||
+        (`stty size`.split[1].to_i rescue nil)
+
+      w.is_a?(Integer) && w > 0 ? w : 80
+    end
+
+    def render_row(row, opts={})
+
+      indent = opts[:indent] || 0
+      ck = opts[:col_keys] || opts[:ck]
+
+      rn = opts[:row_number] || opts[:rn]
+      rn = rn.to_s if rn
+
+      ni = ' ' * indent
+
+      tw = term_width - 1
+      o = StringIO.new
+
+      line = ni + '[ '
+      row.each_with_index do |cell, i|
+
+        id = (ck ? xelcol(1 + i) : '') + (rn ? rn : '') + (ck || rn ? ' ' : '')
+        c = id + cell.inspect + ', '
+
+        if indent + line.length + c.length > tw
+          o << line << "\n"
+          line = ni + '  '
+        end
+        line += c
+      end
+      o << line << ']'
+
+      o.string
+    end
+
+    def xelcol(n)
+
+      r = []
+      while n > 0; n -= 1; r.unshift(('A'.ord + (n % 26)).chr); n /= 26; end
+
+      r.join
     end
   end
 end

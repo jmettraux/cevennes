@@ -412,5 +412,21 @@ id,name,age
          ["!", 5, ["3", "René", "21", "Ren"], 5, ["3", "René", "21"]]])
     end
   end
+
+  group '.to_pretty_s' do
+
+    test 'renders a nice view of the given diff' do
+
+
+      d = Cevennes.diff(
+        'ISIN / Cusip',
+        File.read('test/list0.csv'),
+        File.read('test/list1.csv'))
+
+pp d
+puts "v" * 80
+      puts Cevennes.to_pretty_s(d, mute_eq: true)
+    end
+  end
 end
 
