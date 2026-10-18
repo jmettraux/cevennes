@@ -423,9 +423,16 @@ id,name,age
         File.read('test/list0.csv'),
         File.read('test/list1.csv'))
 
-pp d
-puts "v" * 80
-      puts Cevennes.to_pretty_s(d, mute_eq: true)
+      #puts "v" * 80
+      #puts Cevennes.to_pretty_s(d, mute_eq: true)
+      #puts "v" * 80
+      #puts Cevennes.to_pretty_s(d, mute_eq: true, no_colours: true)
+
+      s = Cevennes.to_pretty_s(d, mute_eq: true, no_colours: true)
+
+      assert s, /line: 16, count: 72/
+      assert s, /- 25 \[ A nil, B "XS142/
+      assert s, /## done \|:\./
     end
   end
 end

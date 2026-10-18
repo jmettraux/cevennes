@@ -58,60 +58,69 @@ module Cevennes
       _, kl0, ks0, kl1, ks1 = diff[0]
       _, stats = diff[1]
 
-      o = StringIO.new
-
-      o << c.dg << "# diff\n" << c.rs
-
-      o << "* length: #{diff.length}\n"
-      o << "\n"
-
-      o << c.dg << "# keys\n" << c.rs
-      o << "* l0: #{kl0}\n"
-      o << "* ks0.size: #{ks0.size}\n"
-      o << "* l1: #{kl1}\n"
-      o << "* ks1.size: #{ks1.size}\n"
-      o << "\n"
-
-      o << "```ruby\n"
-      o << "### ks0\n"
-      o << render_row(ks0, ck: true, rn: kl0, colours: c) << "\n"
-      o << "### ks1\n"
-      if ks1 == ks0
-        o << c.dg << "# (identical)\n" << c.rs
-      else
-        o << render_row(ks1, ck: true, rn: kl1, colours: c) << "\n"
-      end
-      o << "```\n\n"
-
-      o << c.dg << "# stats\n" << c.rs
-      o << "```ruby\n" << stats.inspect << "\n```\n"
-
       dis = diff[2..-1]
 
       lnl = dis
         .inject([]) { |a, di| a << di[1].to_s.length << di[3].to_s.length; a }
         .max
 
-      o << "## diff\n"
+      o = StringIO.new
+
+      o << c.dg << "# diff\n" << c.rs
+
+      o << "\n* length: #{diff.length}\n"
+      o << "\n"
+
+      o << c.dg << "## keys\n\n" << c.rs
+
+      o << "```\n"
+      o << "### ks0\n"
+      o << (' ' * (lnl + 3)) << "# line: #{kl0}, count: #{ks0.size}\n"
+      o << render_row(
+        #ks0, ck: true, rn: kl0, colours: c, bc: c.dark_gray, indent: lnl + 3)
+        ks0, ck: true, colours: c, bc: c.dark_gray, indent: lnl + 3)
+      o << "\n### ks1\n"
+      o << c.rs << (' ' * (lnl + 3)) << "# line: #{kl1}, count: #{ks1.size}\n"
+      if ks1 == ks0
+        o << c.dg << (' ' * (lnl + 3)) << "# (identical)\n" << c.rs
+      else
+        o << render_row(
+          #ks1, ck: true, rn: kl1, colours: c, indent: lnl + 3) << "\n"
+          ks1, ck: true, colours: c, indent: lnl + 3) << "\n"
+      end
+      o << "```\n\n"
+
+      o << c.dg << "## stats\n\n" << c.rs
+      o << "```\n  " << stats.inspect << "\n```\n\n"
+
+      o << c.dg << "## diffs\n\n"
+      o << "```\n"
 
       diff[2..-1].each do |di|
 
         next if mute_eq && (di[0] == '=')
 
-        o <<
+        bc =
           case di[0]
           when '+' then c.green
           when '-' then c.red
           else c.dg; end
+        o << bc
 
-        r0 = di[2] ? render_row(di[2], indent: lnl + 3) : ' ' * (lnl + 3)
-        r1 = di[4] ? render_row(di[4], indent: lnl + 3) : ' ' * (lnl + 3)
+        lnl1 = lnl + 3
+        os = { indent: lnl1, ck: true, colours: c, bc: bc }
+
+        r0 = di[2] ? render_row(di[2], os) : ' ' * (lnl1)
+        r1 = di[4] ? render_row(di[4], os.merge(vs: di[2])) : ' ' * (lnl1)
 
         o << di[0] << " %#{lnl}d " % di[1] << r0.lstrip << "\n"
         o << ' ' << " %#{lnl}d " % di[3] << r1.lstrip << "\n"
 
         o << c.rs
       end
+      o << "```\n"
+
+      o << c.dg << "\n## done |:." << c.rs
 
       o.string
     end
@@ -205,6 +214,9 @@ module Cevennes
     def render_row(row, opts={})
 
       c = opts[:colours] || Colorato.no_colours
+      bc = opts[:base_colour] || opts[:bc] || ''
+
+      rs = c.reset + bc
 
       indent = opts[:indent] || 0
       ck = opts[:col_keys] || opts[:ck]
@@ -212,24 +224,34 @@ module Cevennes
       rn = opts[:row_number] || opts[:rn]
       rn = rn.to_s if rn
 
+      r0 = opts[:vs]
+
       ni = ' ' * indent
 
       tw = term_width - 1
       o = StringIO.new
 
-      line = ni + '[ '
+      line = ni + bc + '[ '
+      llen = Colorato.no_colour_length(line)
+        #
       row.each_with_index do |cell, i|
 
         id = (ck ? xelcol(1 + i) : '') + (rn ? rn : '') + (ck || rn ? ' ' : '')
-        id = c.blue + id + c.rs if id.length > 0
+        id = c.rs + c.light_gray + id + rs if id.length > 0
 
-        cl = id + cell.inspect + ', '
+        ce = cell.inspect
+        ce = c.rs + c.yellow + ce + rs if r0 && cell != r0[i]
 
-        if indent + line.length + cl.length > tw
+        cl = id + ce + ', '
+        clen = Colorato.no_colour_length(cl)
+
+        if indent + llen + clen > tw
           o << line << "\n"
           line = ni + '  '
+          llen = line.length
         end
         line += cl
+        llen += clen
       end
       o << line << ']'
 
