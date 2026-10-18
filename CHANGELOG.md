@@ -4,7 +4,7 @@
 
 ## cevennes 1.4.0  not yet released
 
-* Bring in to_pretty_s(diff)
+* Bring in .to_pretty_s(diff)
 
 
 ## cevennes 1.3.0  released 2022-07-24

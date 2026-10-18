@@ -47,7 +47,7 @@ module Cevennes
       fail ArgumentError.new("to_pretty_s() expects a diff array") \
         unless is_diff_array?(diff)
 
-      mute_eq = ! opts[:show_eq]
+      drop_eq = !! (opts[:drop_equals] || opts[:drop_eq])
 
       c =
         opts[:no_colours] || opts[:no_colors] ||
@@ -98,7 +98,7 @@ module Cevennes
 
       diff[2..-1].each do |di|
 
-        next if mute_eq && (di[0] == '=')
+        next if drop_eq && (di[0] == '=')
 
         bc =
           case di[0]
