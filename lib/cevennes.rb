@@ -21,8 +21,8 @@ module Cevennes
         h0
           .collect { |k, v|
             v1 = h1[k]
-            if v1 == nil then         [ '-', *v,   -1, nil ]
-            elsif v1[1] == v[1] then  [ '=', *v, v[0], nil ]
+            if v1 == nil         then [ '-', *v,   -1, nil ]
+            elsif v1[1] == v[1]  then [ '=', *v, v[0], nil ]
             else                      [ '!', *v,  *v1 ]
             end }
 
