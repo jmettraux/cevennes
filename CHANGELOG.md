@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 1.4.0  not yet released
+## cevennes 1.4.0  released 2026-10-19
 
 * Bring in .to_pretty_s(diff)
 
