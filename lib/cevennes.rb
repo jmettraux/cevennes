@@ -55,6 +55,8 @@ module Cevennes
           Colorato.no_colours :
           Colorato.colour_if_supported
 
+      cml = opts[:cell_max_len] || opts[:cell_maxlen] || 28
+
       _, kl0, ks0, kl1, ks1 = diff[0]
       _, stats = diff[1]
 
@@ -78,7 +80,7 @@ module Cevennes
       o << (' ' * (lnl + 3)) << "# line: #{kl0}, count: #{ks0.size}\n"
       o << render_row(
         #ks0, ck: true, rn: kl0, colours: c, bc: c.dark_gray, indent: lnl + 3)
-        ks0, ck: true, colours: c, bc: c.dark_gray, indent: lnl + 3)
+        ks0, ck: true, colours: c, bc: c.dark_gray, indent: lnl + 3, cml: cml)
       o << "\n### ks1\n"
       o << c.rs << (' ' * (lnl + 3)) << "# line: #{kl1}, count: #{ks1.size}\n"
       if ks1 == ks0
@@ -86,7 +88,7 @@ module Cevennes
       else
         o << render_row(
           #ks1, ck: true, rn: kl1, colours: c, indent: lnl + 3) << "\n"
-          ks1, ck: true, colours: c, indent: lnl + 3) << "\n"
+          ks1, ck: true, colours: c, indent: lnl + 3, cml: cml) << "\n"
       end
       o << "```\n\n"
 
@@ -108,7 +110,7 @@ module Cevennes
         o << bc
 
         lnl1 = lnl + 3
-        os = { indent: lnl1, ck: true, colours: c, bc: bc }
+        os = { indent: lnl1, ck: true, colours: c, bc: bc, cml: cml }
 
         r0 = di[2] ? render_row(di[2], os) : ' ' * (lnl1)
         r1 = di[4] ? render_row(di[4], os.merge(vs: di[2])) : ' ' * (lnl1)
@@ -224,6 +226,8 @@ module Cevennes
       rn = opts[:row_number] || opts[:rn]
       rn = rn.to_s if rn
 
+      cml = opts[:cml] || 28
+
       r0 = opts[:vs]
 
       ni = ' ' * indent
@@ -239,7 +243,8 @@ module Cevennes
         id = (ck ? xelcol(1 + i) : '') + (rn ? rn : '') + (ck || rn ? ' ' : '')
         id = c.rs + c.light_gray + id + rs if id.length > 0
 
-        ce = cell.inspect
+        t = cell.is_a?(String) ? Colorato.truncate_string(cell, cml, '…') : cell
+        ce = t.inspect
         ce = c.rs + c.yellow + ce + rs if r0 && cell != r0[i]
 
         cl = id + ce + ', '
