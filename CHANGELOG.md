@@ -4,6 +4,8 @@
 
 ## cevennes 1.4.1  not yet released
 
+* Require colorato
+
 
 ## cevennes 1.4.0  released 2026-10-19
 

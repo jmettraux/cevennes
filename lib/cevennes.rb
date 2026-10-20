@@ -2,6 +2,8 @@
 
 require 'csv'
 
+require 'colorato'
+
 
 module Cevennes
 
