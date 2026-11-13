@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## cevennes 1.5.0  not yet released
+
+
 ## cevennes 1.4.1  released 2026-10-20
 
 * Require colorato
