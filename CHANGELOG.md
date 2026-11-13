@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## cevennes 1.5.0  not yet released
+## cevennes 1.5.0  released 2026-11-13
 
 * Introduce `float: 'narrow'`
 
