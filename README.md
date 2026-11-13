@@ -96,6 +96,36 @@ d = Cevennes.diff('id', cvs0, cvs1, drop_equals: true)
     # the "=" entries are not included
 ```
 
+### float: 'narrow'
+
+Sometimes CSV exports turns numbers like `1.3` to strings like `"1.30"`. By using the `float: 'narrow'` option, Cevennes takes care to compare `1.3` with `1.3`.
+
+```ruby
+csv0 = %{
+id, name,          age,   city,       county
+0,  John,          33,    Alexandria, Yorkshire
+1,  Jean-Baptiste, 44.10, Galileia,   Lancashire
+4,  Matthew,       20,    Beth,       Essex
+}.strip + "\n"
+
+csv1 = %{
+id, name,          age,  city,       county
+0,  John,          33.0, Alexandria, Yorkshire
+1,  Jean-Baptiste, 44.1, Galileia,   Lancashire
+4,  Matthew,       20,   Beth,       Essex
+}.strip + "\n"
+
+d = Cevennes.diff('name', csv0, csv1)
+
+pp d[1]
+  # => [ "stats", { "!" => 2, "=" => 1, "l0" => 3, "l1" => 3 } ]
+
+d = Cevennes.diff('name', csv0, csv1, float: 'narrow')
+
+pp d[1]
+  # => [ "stats", { "=" => 3, "l0" => 3, "l1" => 3 } ]
+```
+
 
 ## LICENSE
 

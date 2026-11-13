@@ -411,6 +411,59 @@ id,name,age
          ["-", 4, ["2", "Matthew", "20", "Matt"], -1, nil],
          ["!", 5, ["3", "René", "21", "Ren"], 5, ["3", "René", "21"]]])
     end
+
+    group "float: 'narrow'" do
+
+      test 'narrows the floats for comparison' do
+
+        csv0 = %{
+id,name,age,city,county
+0,John,33,Alexandria,Yorkshire
+1,Jean-Baptiste,44.10,Galileia,Lancashire
+4,Matthew,20,Beth,Essex
+        }.strip + "\n"
+        csv1 = %{
+id,name,age,city,county
+0,John,33.0,Alexandria,Yorkshire
+1,Jean-Baptiste,44.1,Galileia,Lancashire
+4,Matthew,20,Beth,Essex
+        }.strip + "\n"
+
+        d = Cevennes.diff(
+          'name', csv0, csv1, drop_equals: true)
+
+        assert d[1], [ 'stats', { '!' => 2, '=' => 1, 'l0' => 3, 'l1' => 3 } ]
+
+        d = Cevennes.diff(
+          'name', csv0, csv1, float: 'narrow', drop_equals: true)
+
+        assert d[1], [ 'stats', { '=' => 3, 'l0' => 3, 'l1' => 3 } ]
+      end
+
+      test 'narrows the floats for comparison (2)' do
+
+        csv0 = %{
+id, name,          age,   city,       county
+0,  John,          33,    Alexandria, Yorkshire
+1,  Jean-Baptiste, 44.10, Galileia,   Lancashire
+4,  Matthew,       20,    Beth,       Essex
+        }.strip + "\n"
+        csv1 = %{
+id, name,          age,  city,       county
+0,  John,          33.0, Alexandria, Yorkshire
+1,  Jean-Baptiste, 44.1, Galileia,   Lancashire
+4,  Matthew,       20,   Beth,       Essex
+        }.strip + "\n"
+
+        d = Cevennes.diff('name', csv0, csv1)
+
+        assert d[1], [ 'stats', { '!' => 2, '=' => 1, 'l0' => 3, 'l1' => 3 } ]
+
+        d = Cevennes.diff('name', csv0, csv1, float: 'narrow')
+
+        assert d[1], [ 'stats', { '=' => 3, 'l0' => 3, 'l1' => 3 } ]
+      end
+    end
   end
 
   group '.to_pretty_s' do

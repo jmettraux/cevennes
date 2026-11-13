@@ -23,9 +23,9 @@ module Cevennes
         h0
           .collect { |k, v|
             v1 = h1[k]
-            if v1 == nil         then [ '-', *v,   -1, nil ]
-            elsif v1[1] == v[1]  then [ '=', *v, v[0], nil ]
-            else                      [ '!', *v,  *v1 ]
+            if v1 == nil                 then [ '-', *v,   -1, nil ]
+            elsif rowEquals(v1, v, opts) then [ '=', *v, v[0], nil ]
+            else                              [ '!', *v,  *v1 ]
             end }
 
       (h1.keys - h0.keys)
@@ -140,6 +140,26 @@ module Cevennes
     end
 
     protected
+
+    def rowEquals(row0, row1, opts)
+
+      row01, row11 = row0[1], row1[1]
+
+      return false if row01.length != row11.length
+
+      if opts[:float] == 'narrow'
+
+        row01.each_with_index { |c0, i| c1 = row11[i]
+          next if c0 == c1
+          cf0 = Float(c0, exception: false) || c0
+          cf1 = Float(c1, exception: false) || c1
+          return false if cf0 != cf1 }
+
+        return true
+      end
+
+      row01 == row11
+    end
 
     def strip(row)
 

@@ -4,6 +4,8 @@
 
 ## cevennes 1.5.0  not yet released
 
+* Introduce `float: 'narrow'`
+
 
 ## cevennes 1.4.1  released 2026-10-20
 
